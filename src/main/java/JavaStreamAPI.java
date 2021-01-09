@@ -4,6 +4,7 @@ import entity.Person;
 import mockdata.MockData;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,6 +24,15 @@ public class JavaStreamAPI {
 
             System.out.println("Iterating even Numbers");
             intStreamIterate();
+
+            System.out.println("Minimum Number of 1, 2, 3, 4");
+            minNumberComparator();
+
+            System.out.println("Minimum Number of 1, 2, 3, 4");
+            maxNumberComparator();
+
+            System.out.println("Minimum Number of 1, 1, 2, 2, 3, 4");
+            distinctNumbers();
 
         } catch (IOException e) {
             System.out.println("Something went wrong.");
@@ -75,5 +85,35 @@ public class JavaStreamAPI {
                 .filter(number -> number % 2 == 0)
                 .limit(10)
                 .forEach(System.out::println);
+    }
+
+    private static void minNumberComparator() {
+        final List<Integer> integerList = ImmutableList.of(1, 2, 3, 4);
+
+        Integer minNumber = integerList.stream()
+                .min((number1, number2) -> number1 > number2 ? 1 : -1)
+                .get();
+
+        System.out.println(minNumber);
+    }
+
+    private static void maxNumberComparator() {
+        final List<Integer> integerList = ImmutableList.of(1, 2, 3, 4);
+
+        Integer maxNumber = integerList.stream()
+                .max(Comparator.naturalOrder())
+                .get();
+
+        System.out.println(maxNumber);
+    }
+
+    private static void distinctNumbers() {
+        final List<Integer> integerList = ImmutableList.of(1, 1, 2, 2, 3, 4);
+
+        List<Integer> distinctIntegers = integerList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        System.out.println(distinctIntegers);
     }
 }
