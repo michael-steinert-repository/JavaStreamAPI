@@ -1,6 +1,8 @@
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import entity.Car;
 import entity.Person;
+import entity.PersonDTO;
 import mockdata.MockData;
 
 import java.io.IOException;
@@ -33,6 +35,12 @@ public class JavaStreamAPI {
 
             System.out.println("Minimum Number of 1, 1, 2, 2, 3, 4");
             distinctNumbers();
+
+            System.out.println("Mapping Person to PersonDTO");
+            mappingPersonToPersonDtoLists();
+
+            System.out.println("Mapping Car Price to Double and build Average");
+            mappingToDoubleAndBuildAverage();
 
         } catch (IOException e) {
             System.out.println("Something went wrong.");
@@ -115,5 +123,27 @@ public class JavaStreamAPI {
                 .collect(Collectors.toList());
 
         System.out.println(distinctIntegers);
+    }
+
+    private static void mappingPersonToPersonDtoLists() throws IOException {
+        ImmutableList<Person> personList = MockData.getPeople();
+
+        List<PersonDTO> personDTOList = personList.stream()
+                .map(person -> new PersonDTO(person.getId(), person.getFirstName(), person.getAge()))
+                .limit(4)
+                .collect(Collectors.toList());
+
+        personDTOList.forEach(System.out::println);
+    }
+
+    private static void mappingToDoubleAndBuildAverage() throws IOException {
+        ImmutableList<Car> carList = MockData.getCars();
+
+        double average = carList.stream()
+                .mapToDouble(car -> car.getPrice())
+                .average()
+                .orElse(0);
+
+        System.out.println(Math.round(average));
     }
 }
