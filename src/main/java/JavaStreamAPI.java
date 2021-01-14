@@ -6,8 +6,8 @@ import entity.PersonDTO;
 import mockdata.MockData;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,6 +41,30 @@ public class JavaStreamAPI {
 
             System.out.println("Mapping Car Price to Double and build Average");
             mappingToDoubleAndBuildAverage();
+
+            System.out.println("Find first Integer in Array");
+            findFirstInArray();
+
+            System.out.println("Find any Integer in Array");
+            findAnyInArray();
+
+            System.out.println("Count Male in List");
+            countMaleInList();
+
+            System.out.println("Get min Price form yellow Cars");
+            minPriceAndYellowCarFromList();
+
+            System.out.println("Get max Price form yellow Cars");
+            maxPriceAndYellowCarFromList();
+
+            System.out.println("Get Statistics for Price form Cars");
+            statisticsPriceForCarFromList();
+
+            System.out.println("Group Cars by Make");
+            groupCarsByMakeFromList();
+
+            System.out.println("Grouping and Counting Names in a List");
+            countingNamesInList();
 
         } catch (IOException e) {
             System.out.println("Something went wrong.");
@@ -145,5 +169,100 @@ public class JavaStreamAPI {
                 .orElse(0);
 
         System.out.println(Math.round(average));
+    }
+    
+    private static void findAnyInArray() {
+        Integer[] integerArray = {1, 2, 3, 4};
+
+        Integer anyInteger = Arrays.stream(integerArray)
+                .filter(integer -> integer < 3)
+                .findAny()
+                .get();
+
+        System.out.println(anyInteger);
+    }
+
+    private static void findFirstInArray() {
+        Integer[] integerArray = {1, 2, 3, 4};
+
+        Integer firstInteger = Arrays.stream(integerArray)
+                .filter(integer -> integer < 3)
+                .findFirst()
+                .get();
+
+        System.out.println(firstInteger);
+    }
+
+    private static void countMaleInList() throws IOException {
+        ImmutableList<Person> personList = MockData.getPeople();
+
+        long countMale = personList.stream()
+                .filter(person -> person.getGender().equalsIgnoreCase("male"))
+                .count();
+
+        System.out.println(countMale);
+    }
+
+    private static void minPriceAndYellowCarFromList() throws IOException {
+        ImmutableList<Car> carList = MockData.getCars();
+
+        double minPriceFromYellowCars = carList.stream()
+                .filter(car -> car.getColor().equalsIgnoreCase("yellow"))
+                .mapToDouble(car -> car.getPrice())
+                .min()
+                .orElse(0);
+
+        System.out.println(Math.round(minPriceFromYellowCars));
+    }
+
+    private static void maxPriceAndYellowCarFromList() throws IOException {
+        ImmutableList<Car> carList = MockData.getCars();
+
+        double maxPriceFromYellowCars = carList.stream()
+                .filter(car -> car.getColor().equalsIgnoreCase("yellow"))
+                .mapToDouble(car -> car.getPrice())
+                .max()
+                .getAsDouble();
+
+        System.out.println(Math.round(maxPriceFromYellowCars));
+    }
+
+    private static void statisticsPriceForCarFromList() throws IOException {
+        ImmutableList<Car> carList = MockData.getCars();
+
+        DoubleSummaryStatistics priceSummaryStatistics = carList.stream()
+                .mapToDouble(car -> car.getPrice())
+                .summaryStatistics();
+
+        System.out.println(priceSummaryStatistics);
+        System.out.println(priceSummaryStatistics.getMax());
+        System.out.println(priceSummaryStatistics.getSum());
+        System.out.println(priceSummaryStatistics.getMin());
+        System.out.println(priceSummaryStatistics.getCount());
+        System.out.println(priceSummaryStatistics.getAverage());
+    }
+
+    private static void groupCarsByMakeFromList() throws IOException {
+        ImmutableList<Car> carList = MockData.getCars();
+
+        Map<String, List<Car>> groupCarsByMake = carList.stream()
+                .limit(4)
+                .collect(Collectors.groupingBy(car -> car.getMake()));
+
+        groupCarsByMake.forEach((make, cars) -> {
+            System.out.println(make);
+            cars.forEach(System.out::println);
+        });
+    }
+
+    private static void countingNamesInList() throws IOException {
+        ArrayList<String> nameList = Lists.newArrayList("Michael", "Michael", "Marie");
+
+        Map<String, Long> countingNames = nameList.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        countingNames.forEach((name, count) -> {
+            System.out.println(name + " > " + count);
+        });
     }
 }
