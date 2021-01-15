@@ -66,6 +66,12 @@ public class JavaStreamAPI {
             System.out.println("Grouping and Counting Names in a List");
             countingNamesInList();
 
+            System.out.println("Reduce all Integers in a List");
+            reduceIntegersInArray();
+
+            System.out.println("Flat all Lists in a List");
+            flatMapToFlatListsInList();
+
         } catch (IOException e) {
             System.out.println("Something went wrong.");
         }
@@ -264,5 +270,39 @@ public class JavaStreamAPI {
         countingNames.forEach((name, count) -> {
             System.out.println(name + " > " + count);
         });
+    }
+
+    private static void reduceIntegersInArray() {
+        Integer[] integerArray = {1, 2, 3, 4};
+
+        int reducedInteger = Arrays.stream(integerArray)
+                .reduce(0, (a, b) -> a + b);
+
+        System.out.println(reducedInteger);
+    }
+
+    private static void flatMapToFlatListsInList() {
+        final List<ArrayList<String>> arrayListOfNames = Lists.newArrayList(
+                Lists.newArrayList("Mariam", "Alex", "Ismail"),
+                Lists.newArrayList("John", "Alesha", "Andre"),
+                Lists.newArrayList("Susy", "Ali")
+        );
+
+        List<String> flatListOfNames = Lists.newArrayList();
+
+        // without FlatMap()
+        for(List<String> listOfNames : arrayListOfNames) {
+            for(String name : listOfNames) {
+                flatListOfNames.add(name);
+            }
+        }
+
+        System.out.println(flatListOfNames);
+
+        List<String> flatMapListOfNames = arrayListOfNames.stream()
+                .flatMap(list -> list.stream())
+                .collect(Collectors.toList());
+
+        System.out.println(flatMapListOfNames);
     }
 }
