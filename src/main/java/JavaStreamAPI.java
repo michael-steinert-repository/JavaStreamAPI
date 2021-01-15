@@ -72,6 +72,12 @@ public class JavaStreamAPI {
             System.out.println("Flat all Lists in a List");
             flatMapToFlatListsInList();
 
+            System.out.println("Joining all Strings in a List");
+            joiningStringInList();
+
+            System.out.println("Implemented the Collectors.toList()");
+            implementCollectorsToList();
+
         } catch (IOException e) {
             System.out.println("Something went wrong.");
         }
@@ -283,7 +289,7 @@ public class JavaStreamAPI {
 
     private static void flatMapToFlatListsInList() {
         final List<ArrayList<String>> arrayListOfNames = Lists.newArrayList(
-                Lists.newArrayList("Mariam", "Alex", "Ismail"),
+                Lists.newArrayList("Mariam", "Alex", "Michael"),
                 Lists.newArrayList("John", "Alesha", "Andre"),
                 Lists.newArrayList("Susy", "Ali")
         );
@@ -304,5 +310,30 @@ public class JavaStreamAPI {
                 .collect(Collectors.toList());
 
         System.out.println(flatMapListOfNames);
+    }
+
+    private static void joiningStringInList() {
+        final List<String> arrayListOfNames = Lists.newArrayList("Mariam", "Alex", "Michael");
+
+        String joinedStrings = arrayListOfNames.stream()
+                .map(string -> string.toUpperCase())
+                .collect(Collectors.joining(","));
+
+        System.out.println(joinedStrings);
+    }
+
+    private static void implementCollectorsToList() throws IOException {
+        ImmutableList<Person> personList = MockData.getPeople();
+
+        List<String> emailList = personList.stream()
+                .map(person -> person.getEmail())
+                .limit(4)
+                .collect(
+                        () -> new ArrayList<String>(),
+                        (list, element) -> list.add(element),
+                        (list1, list2) -> list1.addAll(list2));
+//                .collect(Collectors.toList());
+
+        emailList.forEach(System.out::println);
     }
 }
